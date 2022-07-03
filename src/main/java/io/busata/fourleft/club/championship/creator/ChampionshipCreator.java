@@ -93,7 +93,7 @@ public class ChampionshipCreator {
         final var previouslyGeneratedGroups = previouslyGeneratedVehicles.stream().map(VehicleGroups::findGroup).collect(Collectors.toList());
 
         VehicleGroups vehicleGroup = weightedOccurenceSelector.generate(Arrays.asList(VehicleGroups.values()),
-                previouslyGeneratedGroups, 7
+                previouslyGeneratedGroups, 5
         );
 
         return weightedOccurenceSelector.generate(vehicleGroup.getVehicleOptions(),

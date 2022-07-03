@@ -33,6 +33,6 @@ public class WeightedOccurenceSelector {
     private <T> double generateWeight(Map<T, Long> countryCounts, T option) {
         int occurrences = countryCounts.getOrDefault(option, 0L).intValue();
 
-        return occurrences == 0 ? 1 : 0;
+        return occurrences == 0 ? 1 : 0.01;
     }
 }
