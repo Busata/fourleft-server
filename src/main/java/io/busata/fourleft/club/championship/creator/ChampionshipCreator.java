@@ -29,8 +29,7 @@ public class ChampionshipCreator {
     private Random random = new Random(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
 
     private final ClubRepository clubRepository;
-
-    private final WeightedOccurenceSelector weightedOccurenceSelector;
+    private final CycleOptionsSelector cycleOptionsSelector;
     private final int durationChampionshipInMinutes = 1430;
 
     @Transactional
@@ -75,9 +74,7 @@ public class ChampionshipCreator {
         Collections.reverse(countryOptions);
 
         return CountryConfiguration.findByCountry(
-                weightedOccurenceSelector.generate(Arrays.asList(CountryOption.values()),
-                        countryOptions, 13
-                )
+                cycleOptionsSelector.generate(Arrays.asList(CountryOption.values()), countryOptions)
         );
     }
 
@@ -92,13 +89,11 @@ public class ChampionshipCreator {
 
         final var previouslyGeneratedGroups = previouslyGeneratedVehicles.stream().map(VehicleGroups::findGroup).collect(Collectors.toList());
 
-        VehicleGroups vehicleGroup = weightedOccurenceSelector.generate(Arrays.asList(VehicleGroups.values()),
-                previouslyGeneratedGroups, 5
-        );
+        VehicleGroups vehicleGroup = cycleOptionsSelector.generate(Arrays.asList(VehicleGroups.values()),
+                previouslyGeneratedGroups);
 
-        return weightedOccurenceSelector.generate(vehicleGroup.getVehicleOptions(),
+        return cycleOptionsSelector.generate(vehicleGroup.getVehicleOptions(),
                 previouslyGeneratedVehicles.stream().filter(vehicleGroup::containsVehicleOption).collect(Collectors.toList())
-                ,13
         );
     }
 
