@@ -1,13 +1,13 @@
 package io.busata.fourleft.club.championship.creator;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -20,7 +20,8 @@ public class CycleOptionsSelector {
         final var remainder = occurrences.size() % limit;
 
         final var lastBag = occurrences.stream().limit(remainder).toList();
-        final var possibleOptions = uniqueOptions.stream().filter(i -> !lastBag.contains(i)).collect(Collectors.toList());
+
+        final var possibleOptions = ListUtils.subtract(uniqueOptions, lastBag);
 
         return possibleOptions.get(random.nextInt(possibleOptions.size()));
     }
