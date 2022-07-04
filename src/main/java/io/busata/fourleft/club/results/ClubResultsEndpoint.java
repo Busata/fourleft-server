@@ -49,7 +49,8 @@ public class ClubResultsEndpoint {
 
     @GetMapping("/api/club/{clubId}/event_summary")
     public ChampionshipEventSummaryTo getEventSummary(@PathVariable Long clubId) {
-        return clubFacade.getOrCreate(clubId).findActiveChampionship()
+        final var club = clubFacade.getOrCreate(clubId);
+        return club.findActiveChampionship().or(club::findPreviousChampionship)
                 .map(clubResultToFactory::createEventSummary)
                 .orElseThrow();
     }
