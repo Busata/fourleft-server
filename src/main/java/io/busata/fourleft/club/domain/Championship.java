@@ -7,6 +7,7 @@ import org.springframework.core.annotation.Order;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -57,4 +58,17 @@ public class Championship {
         return Long.parseLong(getReferenceId());
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Championship that = (Championship) o;
+        return referenceId.equals(that.referenceId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(referenceId);
+    }
 }

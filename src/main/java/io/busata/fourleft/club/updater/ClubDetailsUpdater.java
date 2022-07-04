@@ -36,14 +36,14 @@ class ClubDetailsUpdater {
         log.info("Fetching championships from API");
         DR2ClubRecentResults recentResults = dr2Client.getClubRecentResults(club.getReferenceId());
 
-        List<Championship> championships = recentResults.championships().stream().map(championshipFactory::create).peek(championship -> championship.setClub(club)).collect(Collectors.toList());
+        List<Championship> updatedChampionhips = recentResults.championships().stream().map(championshipFactory::create).peek(championship -> championship.setClub(club)).collect(Collectors.toList());
 
         log.info("Enrich championship details from API");
         DR2ChampionshipStandings standings = dr2Client.getClubChampionshipStandings(club.getReferenceId());
 
         List<DR2ClubChampionships> championshipDetails = dr2Client.getChampionships(club.getReferenceId());
         championshipDetails.forEach(details -> {
-            championships.stream().filter(championship -> championship.getReferenceId().equals(details.id()))
+            updatedChampionhips.stream().filter(championship -> championship.getReferenceId().equals(details.id()))
                     .findFirst().ifPresent(championship -> {
 
 
@@ -72,8 +72,19 @@ class ClubDetailsUpdater {
                     });
         });
 
-        log.info("Club: {} Championship count: {}", club.getName(), championships.size());
-        club.updateChampionships(championships);
+        log.info("Club: {} Championship count: {}", club.getName(), updatedChampionhips.size());
+
+        var currentChampionships = club.getChampionships();
+
+        var replacedWithUpdated = currentChampionships.stream().map(current -> updatedChampionhips.stream().filter(updated -> updated.equals(current)).findFirst().orElse(current)).collect(Collectors.toList());
+
+        for (Championship updated : updatedChampionhips) {
+            if (!replacedWithUpdated.contains(updated)) {
+                replacedWithUpdated.add(updated);
+            }
+        }
+
+        club.updateChampionships(replacedWithUpdated);
 
         club.findActiveChampionship().or(club::findPreviousChampionship).ifPresent(championship -> {
             championship.setEntries(standings.standings().stream().map(dr2Standing -> {
