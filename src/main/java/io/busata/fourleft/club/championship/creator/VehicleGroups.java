@@ -7,24 +7,26 @@ import java.util.List;
 
 public enum VehicleGroups {
 
-    CLASSIC(
+    UNPOPULAR(
             VehicleOption.H1_FWD,
-            VehicleOption.H2_RWD,
-            VehicleOption.H3_RWD
-    ),
-    CLASSIC_FWD(
             VehicleOption.H2_FWD,
             VehicleOption.F2_KIT_CAR
     ),
+    CLASSIC(
+            VehicleOption.H2_RWD,
+            VehicleOption.H3_RWD
+    ),
+    MODERN_ALTERNATIVE(
+            VehicleOption.R2,
+            VehicleOption.RGT
+    ),
     MODERN(
             VehicleOption.R5,
-            VehicleOption.CC_2000,
-            VehicleOption.R2
-    ),
+            VehicleOption.CC_2000
+            ),
     MODERN_CLASSICS(
             VehicleOption.GROUP_A,
-            VehicleOption.NR4_R4,
-            VehicleOption.RGT
+            VehicleOption.NR4_R4
     ),
     GROUP_B(
             VehicleOption.GROUP_B_4WD,

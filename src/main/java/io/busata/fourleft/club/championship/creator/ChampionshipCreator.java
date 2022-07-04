@@ -8,6 +8,7 @@ import io.busata.fourleft.gateway.dto.club.championship.creation.ServiceArea;
 import io.busata.fourleft.gateway.dto.club.championship.creation.SurfaceDegradation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -29,9 +31,17 @@ public class ChampionshipCreator {
     private Random random = new Random(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
 
     private final ClubRepository clubRepository;
-
-    private final WeightedOccurenceSelector weightedOccurenceSelector;
+    private final CycleOptionsSelector cycleOptionsSelector;
     private final int durationChampionshipInMinutes = 1430;
+
+    private final List<VehicleGroups> vehicleGroupSelection =
+            ListUtils.union(
+                    Arrays.asList(VehicleGroups.values()),
+                    List.of(
+                            VehicleGroups.MODERN,
+                            VehicleGroups.MODERN,
+                            VehicleGroups.MODERN_CLASSICS
+                    ));
 
     @Transactional
     public DR2ChampionshipCreateRequestTo createDailyEvent() {
@@ -75,9 +85,7 @@ public class ChampionshipCreator {
         Collections.reverse(countryOptions);
 
         return CountryConfiguration.findByCountry(
-                weightedOccurenceSelector.generate(Arrays.asList(CountryOption.values()),
-                        countryOptions, 13
-                )
+                cycleOptionsSelector.generate(Arrays.asList(CountryOption.values()), countryOptions)
         );
     }
 
@@ -88,17 +96,15 @@ public class ChampionshipCreator {
 
         Collections.reverse(previouslyGeneratedVehicles);
 
-        log.info("Previous vehicles: {}",previouslyGeneratedVehicles.stream().map(VehicleOption::displayName).collect(Collectors.joining(",")));
+        log.info("Previous vehicles: {}", previouslyGeneratedVehicles.stream().map(VehicleOption::displayName).collect(Collectors.joining(",")));
 
         final var previouslyGeneratedGroups = previouslyGeneratedVehicles.stream().map(VehicleGroups::findGroup).collect(Collectors.toList());
 
-        VehicleGroups vehicleGroup = weightedOccurenceSelector.generate(Arrays.asList(VehicleGroups.values()),
-                previouslyGeneratedGroups, 7
-        );
+        VehicleGroups vehicleGroup = cycleOptionsSelector.generate(vehicleGroupSelection,
+                previouslyGeneratedGroups);
 
-        return weightedOccurenceSelector.generate(vehicleGroup.getVehicleOptions(),
+        return cycleOptionsSelector.generate(vehicleGroup.getVehicleOptions(),
                 previouslyGeneratedVehicles.stream().filter(vehicleGroup::containsVehicleOption).collect(Collectors.toList())
-                ,13
         );
     }
 
