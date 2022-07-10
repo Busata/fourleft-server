@@ -42,7 +42,7 @@ class ClubMemberUpdater {
         var currentPage = 1;
         while (!allMembersFetched) {
 
-            DR2ClubMembers clubMembers = client.getClubMembers(club.getReferenceId(), 200, 1);
+            DR2ClubMembers clubMembers = client.getClubMembers(club.getReferenceId(), 200, currentPage);
 
             if(clubMembers.members() != null) {
                 if(clubMembers.members().Owner() != null) {
@@ -51,7 +51,11 @@ class ClubMemberUpdater {
                 if(clubMembers.members().Player() != null) {
                     members.addAll(clubMembers.members().Player());
                 }
+                if(clubMembers.members().Administrator() != null) {
+                    members.addAll(clubMembers.members().Administrator());
+                }
             }
+
             if (clubMembers.pageCount() == currentPage) {
                 allMembersFetched = true;
             } else {
