@@ -25,7 +25,10 @@ class ClubMemberUpdater {
     private final ClubRepository clubRepository;
 
     public void updateMembers(Club club) {
-        List<ClubMember> members = getAllMembers(club).stream().map(clubMemberFactory::create).toList();
+        List<ClubMember> members = getAllMembers(club).stream().map(clubMemberFactory::create).map(member -> {
+            member.setClub(club);
+            return member;
+        }).toList();
 
         club.updateMembers(members);
 
