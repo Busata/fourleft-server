@@ -1,4 +1,4 @@
-create table championship
+create table club_member
 (
     id                   uuid    not null
         primary key,
