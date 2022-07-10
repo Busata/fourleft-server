@@ -42,11 +42,11 @@ class ClubMemberUpdater {
             DR2ClubMembers clubMembers = client.getClubMembers(club.getReferenceId(), 200, 1);
 
             if(clubMembers.members() != null) {
-                if(clubMembers.members().owner() != null) {
-                    members.addAll(clubMembers.members().owner());
+                if(clubMembers.members().Owner() != null) {
+                    members.addAll(clubMembers.members().Owner());
                 }
-                if(clubMembers.members().player() != null) {
-                    members.addAll(clubMembers.members().player());
+                if(clubMembers.members().Player() != null) {
+                    members.addAll(clubMembers.members().Player());
                 }
             }
             if (clubMembers.pageCount() == currentPage) {
