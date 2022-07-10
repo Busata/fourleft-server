@@ -16,6 +16,8 @@ public class ClubFacade {
     private final ClubDetailsUpdater clubDetailsUpdater;
     private final ClubLeaderboardUpdater clubLeaderboardUpdater;
 
+    private final ClubMemberUpdater clubMemberUpdater;
+
     @Transactional
     public void updateLeaderboards() {
         clubRepository.findAll().stream()
@@ -23,6 +25,7 @@ public class ClubFacade {
                     if (club.requiresRefresh()) {
                         log.info("Club {} data too old, refreshing", club.getName());
                         clubDetailsUpdater.refreshClub(club);
+                        clubMemberUpdater.updateMembers(club);
                         clubRepository.save(club);
                     }
                 })
@@ -53,6 +56,7 @@ public class ClubFacade {
     public void fullRefreshClub(Club club) {
         refreshClubDetails(club);
         refreshLeaderboards(club);
+        refreshMembers(club);
     }
 
     public void refreshClubDetails(Club club) {
@@ -62,6 +66,9 @@ public class ClubFacade {
 
     public void refreshLeaderboards(Club club) {
         clubLeaderboardUpdater.updateLeaderboards(club);
+    }
+    public void refreshMembers(Club club) {
+        clubMemberUpdater.updateMembers(club);
     }
 
 

@@ -2,6 +2,7 @@ package io.busata.fourleft.gateway;
 
 
 import io.busata.fourleft.configuration.feign.FeignConfiguration;
+import io.busata.fourleft.gateway.dto.club.DR2ClubMembers;
 import io.busata.fourleft.gateway.dto.club.championship.creation.DR2ChampionshipCreateRequestTo;
 import io.busata.fourleft.gateway.dto.club.championship.creation.DR2ChampionshipCreationStatus;
 import io.busata.fourleft.gateway.dto.club.championship.creation.DR2ChampionshipDeleteStatus;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -59,4 +61,7 @@ interface DR2Api {
 
     @GetMapping("api/Challenge/Community")
     List<DR2CommunityEvent> getCommunity(@RequestHeader HttpHeaders headers);
+
+    @GetMapping("api/Club/{clubId}/members")
+    DR2ClubMembers getMembers(@RequestHeader HttpHeaders headers, @PathVariable long clubId, @RequestParam int pageSize, @RequestParam int page);
 }

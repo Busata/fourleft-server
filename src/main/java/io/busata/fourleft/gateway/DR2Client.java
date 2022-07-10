@@ -2,6 +2,7 @@ package io.busata.fourleft.gateway;
 
 import io.busata.fourleft.gateway.dto.club.DR2ClubChampionships;
 import io.busata.fourleft.gateway.dto.club.DR2ClubDetails;
+import io.busata.fourleft.gateway.dto.club.DR2ClubMembers;
 import io.busata.fourleft.gateway.dto.club.DR2ClubRecentResults;
 import io.busata.fourleft.gateway.dto.club.championship.creation.DR2ChampionshipCreateRequestTo;
 import io.busata.fourleft.gateway.dto.club.championship.standings.DR2ChampionshipStandings;
@@ -12,6 +13,7 @@ import io.busata.fourleft.gateway.dto.communityevents.DR2CommunityEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -48,6 +50,10 @@ public class DR2Client {
 
     public DR2ClubRecentResults getClubRecentResults(long clubId) {
         return doAuthorizedCall(() -> api.getClubRecentResults(authorization.getHeaders(), clubId));
+    }
+    public DR2ClubMembers getClubMembers(long clubId, int pageSize, int page) {
+        Assert.isTrue(pageSize <= 200, "Page size max 200");
+        return doAuthorizedCall(() -> api.getMembers(authorization.getHeaders(), clubId, pageSize, page));
     }
 
     public DR2ChampionshipCreationStatus createChampionship(long clubId, DR2ChampionshipCreateRequestTo create) {

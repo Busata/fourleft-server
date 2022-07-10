@@ -27,11 +27,19 @@ public class Club {
     @OrderBy("referenceId asc")
     private List<Championship> championships = new ArrayList<>();
 
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClubMember> clubMembers = new ArrayList<>();
+
     private LocalDateTime lastUpdate = LocalDateTime.now();
 
     public void updateChampionships(List<Championship> value) {
         championships.clear();
         championships.addAll(value);
+    }
+
+    public void updateMembers(List<ClubMember> members) {
+        clubMembers.clear();
+        clubMembers.addAll(members);
     }
 
     public boolean requiresRefresh() {
